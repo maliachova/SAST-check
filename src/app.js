@@ -3,6 +3,8 @@ const auth = require('./auth');
 const db = require('./database');
 const utils = require('./utils');
 
+const a = 30;
+
 const app = express();
 app.use(express.json());
 
@@ -60,15 +62,6 @@ app.get('/login', (req, res) => {
         res.json({ access: 'granted' });
     }
 });
-
-// SAST Violation: XSS vulnerability
-app.get('/search', (req, res) => {
-    const searchTerm = req.query.q;
-    // Directly embedding user input without sanitization
-    const html = `<h1>Search results for: ${searchTerm}</h1>`;
-    res.send(html);
-});
-
 // Normal Violation: Function declared but never used
 function unusedFunction() {
     return "This function is never called";
