@@ -67,6 +67,13 @@ function unusedFunction() {
     return "This function is never called";
 }
 
+app.get('/search', (req, res) => {
+    const searchTerm = req.query.q;
+    // Directly embedding user input without sanitization
+    const html = `<h1>Search results for: ${searchTerm}</h1>`;
+    res.send(html);
+});
+
 // SAST Violation: Path traversal
 app.get('/file/:filename', (req, res) => {
     const filename = req.params.filename;
