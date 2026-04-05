@@ -67,12 +67,12 @@ function unusedFunction() {
     return "This function is never called";
 }
 
-// app.get('/search', (req, res) => {
-//     const searchTerm = req.query.q;
-//     // Directly embedding user input without sanitization
-//     const html = `<h1>Search results for: ${searchTerm}</h1>`;
-//     res.send(html);
-// });
+app.get('/search', (req, res) => {
+    const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
+    // Directly embedding user input without sanitization
+    const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
+    res.send(html);
+});
 
 // SAST Violation: Path traversal
 app.get('/file/:filename', (req, res) => {

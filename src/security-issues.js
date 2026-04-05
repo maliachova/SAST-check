@@ -161,12 +161,12 @@ class DatabaseQueryBuilder {
 class SystemFileManager {
     constructor(basePath) {
         this.basePath = basePath || '/var/app/data';
-        // SAST Violation: Hardcoded system credentials
+        // Use environment variables instead of embedding credentials in source.
         this.systemCredentials = {
-            ftpUser: 'admin',
-            ftpPass: 'ftp_admin_2023',
-            dbUser: 'root',
-            dbPass: 'mysql_root_password_123'
+            ftpUser: process.env.FTP_USER || '',
+            ftpPass: process.env.FTP_PASS || '',
+            dbUser: process.env.DB_USER || '',
+            dbPass: process.env.DB_PASS || ''
         };
     }
     
