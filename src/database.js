@@ -8,19 +8,19 @@ const connection = mysql.createConnection({
     database: 'myapp'
 });
 
-// Normal Violation: Callback not using error-first pattern
-function getUser(id, callback) {
-    const query = 'SELECT * FROM users WHERE id = ?';
+// // Normal Violation: Callback not using error-first pattern
+// function getUser(id, callback) {
+//     const query = 'SELECT * FROM users WHERE id = ?';
     
-    connection.query(query, [id], (err, results) => {
-        if (err) {
-            // Normal Violation: Not following error-first callback pattern
-            callback(results, err);  // Parameters in wrong order
-        } else {
-            callback(results, null);
-        }
-    });
-}
+//     connection.query(query, [id], (err, results) => {
+//         if (err) {
+//             // Normal Violation: Not following error-first callback pattern
+//             callback(results, err);  // Parameters in wrong order
+//         } else {
+//             callback(results, null);
+//         }
+//     });
+// }
 
 // SAST Violation: NoSQL injection (if using MongoDB-like syntax)
 function findUserByEmail(email) {
