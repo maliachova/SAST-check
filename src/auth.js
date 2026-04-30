@@ -39,9 +39,6 @@ function isPasswordValid(password) {
     return password.length >= 3;  // Too weak requirement
 }
 
-// Normal Violation: Using var instead of const/let
-var sessionTimeout = 3600;
-
 // SAST Violation: Insecure random number generation
 function generateSessionId() {
     return Math.random().toString(36);  // Not cryptographically secure
