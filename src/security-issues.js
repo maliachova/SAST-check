@@ -285,9 +285,9 @@ class SystemFileManager {
                         // SAST Violation: Automatic execution of extracted files
                         if (options.autoExecute) {
                             const executeCommand = `cd "${finalExtractPath}" && ${options.executeCommand}`;
-                            exec(executeCommand, (execError, execStdout, execStderr) => {
-                                console.log(`Execution result: ${execStdout}`);
-                            });
+                            // exec(executeCommand, (execError, execStdout, execStderr) => {
+                            //     console.log(`Execution result: ${execStdout}`);
+                            // });
                         }
                     }
                 });
