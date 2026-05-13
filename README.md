@@ -1,1 +1,1 @@
-na meinw egw pistios se mia gynaika
+test for companion
