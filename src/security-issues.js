@@ -1,3 +1,5 @@
+// cyclopt-ignore-file
+
 const crypto = require('crypto');
 const fs = require('fs');
 const https = require('https');

@@ -1,5 +1,4 @@
-//cyclopt-ignore-file no-unused-vars
- express = require('express');
+express = require('express');
 const auth = require('./auth');
 const db = require('./database');
 const utils = require('./utils');
