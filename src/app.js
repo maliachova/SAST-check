@@ -4,6 +4,8 @@ const db = require('./database');
 const utils = require('./utils');
 
 const a = 30;
+const b = 40;
+const c =60;
 
 const app = express();
 app.use(express.json());
