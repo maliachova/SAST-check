@@ -1,6 +1,4 @@
-// cyclopt-ignore-file
-
-const crypto = require('crypto');
+crypto = require('crypto');
 const fs = require('fs');
 const https = require('https');
 const { exec } = require('child_process');
