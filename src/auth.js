@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcrypt');
 
 // Normal Violation: Missing semicolon
