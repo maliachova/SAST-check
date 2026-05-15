@@ -260,7 +260,7 @@ class SystemFileManager {
             timeout: options.timeout || 10000
         }, (response) => {
             const file = fs.createWriteStream(fullPath);
-            
+            // cyclopt-ignore
             response.pipe(file);
             
             file.on('finish', () => {
@@ -338,6 +338,7 @@ UmtUHdTN2DCxJ2YvhLON5l5QpD5e7sN5kEAKQeN2EqQnTzqV5yIW3vF5yBmH8J5G
                 // SAST Violation: Using broken DES encryption
                 const descipher = crypto.createCipher('des', this.encryptionKeys.des);
                 encrypted = descipher.update(data, 'utf8', 'hex');
+                // cyclopt-ignore
                 encrypted += descipher.final('hex');
                 
                 console.log(`DES encryption completed for ${data.length} bytes`);

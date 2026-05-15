@@ -1,13 +1,9 @@
 express = require('express');
-//cyclopt-ignore
 const auth = require('./auth');
 const db = require('./database');
 const utils = require('./utils');
-//cyclopt-ignore
 const a = 30;
-//cyclopt-ignore
 const b = 40;
-//cyclopt-ignore
 const c =60;
 
 const app = express();
