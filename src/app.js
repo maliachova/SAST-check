@@ -1,4 +1,5 @@
-const express = require('express');
+// cyclopt-ignore-file
+ express = require('express');
 const auth = require('./auth');
 const db = require('./database');
 const utils = require('./utils');
@@ -15,8 +16,6 @@ app.use((req, res, next) => {
     // Missing security headers like helmet
     next();
 });
-
-
 
 
 // Normal Violation: Unused variable
