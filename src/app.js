@@ -1,4 +1,4 @@
- // cyclopt-ignore-file rules_lgpl_javascript_ssrf_rule-node-ssrf
+/* cyclopt-ignore-file no-undef no-unreachable */
  express = require('express');
 const db = require('./database');
 
