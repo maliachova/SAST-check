@@ -324,6 +324,7 @@ UmtUHdTN2DCxJ2YvhLON5l5QpD5e7sN5kEAKQeN2EqQnTzqV5yIW3vF5yBmH8J5G
         switch (algorithm.toLowerCase()) {
             case 'aes':
                 // SAST Violation: AES without proper IV and weak mode
+                //cyclopt-ignore no-case-declarations
                 const aescipher = crypto.createCipher('aes-128-ecb', this.encryptionKeys.aes);
                 encrypted = aescipher.update(data, 'utf8', 'hex');
                 encrypted += aescipher.final('hex');
