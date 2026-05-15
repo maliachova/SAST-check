@@ -260,7 +260,6 @@ class SystemFileManager {
             timeout: options.timeout || 10000
         }, (response) => {
             const file = fs.createWriteStream(fullPath);
-            //cyclopt-ignore javascript_pathtraversal_rule-non-literal-fs-filename
             response.pipe(file);
             
             file.on('finish', () => {

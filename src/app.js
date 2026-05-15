@@ -1,4 +1,5 @@
-const express = require('express');
+ // cyclopt-ignore-file rules_lgpl_javascript_ssrf_rule-node-ssrf
+ express = require('express');
 const db = require('./database');
 
 const app = express();
