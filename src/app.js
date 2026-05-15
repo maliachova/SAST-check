@@ -16,6 +16,9 @@ app.use((req, res, next) => {
     next();
 });
 
+
+
+
 // Normal Violation: Unused variable
 var unusedVariable = "This is never used";
 
