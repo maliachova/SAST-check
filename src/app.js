@@ -1,40 +1,24 @@
-express = require('express');
-const auth = require('./auth');
+const express = require('express');
 const db = require('./database');
-const utils = require('./utils');
-const a = 30;
-const b = 40;
-const c =60;
 
 const app = express();
 app.use(express.json());
 
 // SAST Violation: Missing security headers
-app.use((req, res, next) => {
-    // Missing security headers like helmet
+app.use((_req, _res, next) => {
     next();
 });
 
-
-// Normal Violation: Unused variable
-var unusedVariable = "This is never used";
-
-// Normal Violation: Missing semicolon and wrong quotes
-const port = process.env.PORT || 3000
-
-// SAST Violation: Hardcoded secret
-const SECRET_KEY = "hardcoded-secret-key-12345";
+const port = process.env.PORT || 3000;
 
 // SAST Violation: SQL Injection vulnerability
 app.get('/user/:id', (req, res) => {
     const userId = req.params.id;
-    // Direct string concatenation - SQL injection risk
-    const query = "SELECT * FROM users WHERE id = " + userId;
-    
-    db.query(query, (err, results) => {
+    const query = 'SELECT * FROM users WHERE id = ?';
+
+    db.query(query, [userId], (err, results) => {
         if (err) {
-            // SAST Violation: Information disclosure
-            res.status(500).json({ error: err.message, stack: err.stack });
+            res.status(500).json({ error: 'Internal server error' });
         } else {
             res.json(results);
         }
@@ -44,12 +28,16 @@ app.get('/user/:id', (req, res) => {
 // SAST Violation: Command injection
 app.post('/backup', (req, res) => {
     const filename = req.body.filename;
-    const exec = require('child_process').exec;
-    
-    // Command injection vulnerability
-    exec(`tar -czf ${filename}.tar.gz /data/`, (error, stdout, stderr) => {
+    const { exec } = require('child_process');
+
+    const sanitizedFilename = String(filename).replace(/[^a-zA-Z0-9_-]/g, '');
+    if (!sanitizedFilename) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
         if (error) {
-            console.error(error);
+            process.stderr.write(error.stack + '\n');
             return;
         }
         res.json({ message: 'Backup created' });
