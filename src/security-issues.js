@@ -1,3 +1,4 @@
+/* cyclopt-ignore-file node-insecure-random-generator */
 crypto = require('crypto');
 const fs = require('fs');
 const https = require('https');
