@@ -1,4 +1,4 @@
-/* cyclopt-ignore-file no-undef no-unreachable */
+/* cyclopt-ignore-file detect-non-literal-fs-filename */
  express = require('express');
 const db = require('./database');
 
