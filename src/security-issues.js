@@ -385,7 +385,7 @@ UmtUHdTN2DCxJ2YvhLON5l5QpD5e7sN5kEAKQeN2EqQnTzqV5yIW3vF5yBmH8J5G
     generateCryptographicValues(count = 10) {
         const values = {
             // SAST Violation: Using Math.random() for crypto
-            /* cyclopt-ignore node-insecure-random-generator */
+            // cyclopt-ignore node-insecure-random-generator 
             sessionIds: Array.from({ length: count }, () => Math.random().toString(36)),
             
             // SAST Violation: Predictable token generation
