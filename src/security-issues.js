@@ -55,29 +55,29 @@ IuuJydBHHl2ZTlpIrXniLY7VVzl5Z8TpVgDqJWvHRgIFQq8jOw8Fgs+hQs3sM8i7
         return `${encodedHeader}.${encodedPayload}.${signature}`;
     }
     
-    // SAST Violation: Insecure token validation
-    validateToken(token) {
-        try {
-            const parts = token.split('.');
-            if (parts.length !== 3) {
-                return null;
-            }
+//     // SAST Violation: Insecure token validation
+//     validateToken(token) {
+//         try {
+//             const parts = token.split('.');
+//             if (parts.length !== 3) {
+//                 return null;
+//             }
             
-            const [header, payload, signature] = parts;
+//             const [header, payload, signature] = parts;
             
-            // SAST Violation: No signature verification
-            const decodedPayload = JSON.parse(
-                Buffer.from(payload + '==', 'base64').toString('utf8')
-            );
+//             // SAST Violation: No signature verification
+//             const decodedPayload = JSON.parse(
+//                 Buffer.from(payload + '==', 'base64').toString('utf8')
+//             );
             
-            // SAST Violation: No expiration check
-            return decodedPayload;
-        } catch (error) {
-            // SAST Violation: Silent failure, no logging
-            return null;
-        }
-    }
-}
+//             // SAST Violation: No expiration check
+//             return decodedPayload;
+//         } catch (error) {
+//             // SAST Violation: Silent failure, no logging
+//             return null;
+//         }
+//     }
+// }
 
 // SAST Violation: Complex SQL injection with dynamic query building
 class DatabaseQueryBuilder {
