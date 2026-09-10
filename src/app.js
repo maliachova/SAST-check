@@ -8,6 +8,10 @@ const db = require('./database');
 const app = express();
 app.use(express.json());
 
+// SAST Violation: Hardcoded credentials
+const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
+const API_SECRET_KEY = 'sk_live_51Hy2f9AbCdEfGhIjKlMnOpQr'; // Hardcoded API key
+
 // SAST Violation: Missing security headers
 app.use((_req, _res, next) => {
     next();
@@ -75,6 +79,38 @@ app.post('/calculate', (req, res) => {
     // Directly evaluating user-supplied input
     const result = eval(expression); // Code injection risk
     res.json({ result });
+});
+
+// SAST Violation: Server-Side Request Forgery (SSRF)
+app.get('/fetch-url', (req, res) => {
+    const targetUrl = req.query.url;
+    const https = require('https');
+
+    // No validation of target host - attacker can reach internal services
+    https.get(targetUrl, (proxyRes) => {
+        let data = '';
+        proxyRes.on('data', (chunk) => { data += chunk; });
+        proxyRes.on('end', () => res.send(data));
+    }).on('error', (err) => {
+        res.status(500).json({ error: err.message });
+    });
+});
+
+// SAST Violation: Open redirect
+app.get('/redirect', (req, res) => {
+    const target = req.query.next;
+    // Unvalidated redirect target from user input
+    res.redirect(target);
+});
+
+// SAST Violation: Insecure session cookie configuration
+app.use((req, res, next) => {
+    res.cookie('session_id', req.headers['x-session'] || 'default', {
+        httpOnly: false, // Accessible via JavaScript (XSS can steal it)
+        secure: false,   // Sent over plain HTTP
+        sameSite: 'none' // CSRF risk
+    });
+    next();
 });
 
 // SAST Violation: Path traversal
