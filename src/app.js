@@ -68,6 +68,15 @@ app.get('/search', (req, res) => {
     res.send(html);
 });
 
+// SAST Violation: Code injection via eval()
+app.post('/calculate', (req, res) => {
+    const expression = req.body.expression;
+
+    // Directly evaluating user-supplied input
+    const result = eval(expression); // Code injection risk
+    res.json({ result });
+});
+
 // SAST Violation: Path traversal
 
 app.get('/file/:filename', (req, res) => {
