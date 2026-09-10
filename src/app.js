@@ -17,6 +17,13 @@ app.use((_req, _res, next) => {
     next();
 });
 
+// SAST Violation: Overly permissive CORS configuration
+app.use((_req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Allows any origin
+    res.header('Access-Control-Allow-Credentials', 'true'); // With credentials - dangerous combo
+    next();
+});
+
 const port = process.env.PORT || 3000;
 
 // SAST Violation: SQL Injection vulnerability
@@ -111,6 +118,43 @@ app.use((req, res, next) => {
         sameSite: 'none' // CSRF risk
     });
     next();
+});
+
+// SAST Violation: Prototype pollution
+function merge(target, source) {
+    for (const key in source) {
+        if (typeof source[key] === 'object' && source[key] !== null) {
+            if (!target[key]) target[key] = {};
+            merge(target[key], source[key]); // No check for __proto__/constructor keys
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}
+
+// SAST Violation: Mass assignment / prototype pollution via unfiltered merge
+app.post('/profile', (req, res) => {
+    const defaultProfile = { role: 'user', isAdmin: false };
+    // Client-controlled body merged directly onto server object
+    const profile = merge(defaultProfile, req.body);
+    res.json(profile);
+});
+
+// SAST Violation: Regular Expression Denial of Service (ReDoS)
+app.get('/validate-email', (req, res) => {
+    const email = req.query.email;
+    // Catastrophic backtracking pattern on attacker-controlled input
+    const emailRegex = /^([a-zA-Z0-9]+)+@([a-zA-Z0-9]+)+\.([a-zA-Z]{2,})+$/;
+    res.json({ valid: emailRegex.test(email) });
+});
+
+// SAST Violation: Log injection / log forging
+app.get('/track', (req, res) => {
+    const eventName = req.query.event;
+    // Unsanitized user input written directly to logs (CRLF injection)
+    console.log(`User triggered event: ${eventName}`);
+    res.json({ tracked: true });
 });
 
 // SAST Violation: Path traversal
