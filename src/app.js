@@ -112,7 +112,7 @@ app.get('/redirect', (req, res) => {
 
 // SAST Violation: Code injection via multi-line eval()
 app.post('/calculate-multi', (req, res) => {
-    const multiResult = eval(
+    const multiResult = Number(
         req.body.expression
     );
     res.json({ multiResult });
@@ -121,20 +121,21 @@ app.post('/calculate-multi', (req, res) => {
 // SAST Violation: Reflected XSS via multi-line response write
 app.get('/greet', (req, res) => {
     res.send(
-        `<h1>Hello ${req.query.name}</h1>`
+        `<h1>Hi ${req.query.name}</h1>`
     );
 });
 
 // SAST Violation: Open redirect via multi-line call
 app.get('/go', (req, res) => {
     res.redirect(
+        // study D7: comment inside the flagged call
         req.query.next
     );
 });
 
 // SAST Violation: Code injection via multi-line eval() (second)
 app.post('/calculate-again', (req, res) => {
-    const againResult = eval(
+    const againResult = eval( // study D8: first line edited
         req.query.code
     );
     res.json({ againResult });
