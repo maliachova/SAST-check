@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 // SAST Violation: Hardcoded credentials
-const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
+const DB_ADMIN_PASSWORD   =   'Sup3rSecretAdminPass!';   // Hardcoded secret
 const API_SECRET_KEY = 'sk_live_51Hy2f9AbCdEfGhIjKlMnOpQr'; // Hardcoded API key
 
 // SAST Violation: Missing security headers
@@ -18,7 +18,7 @@ app.use((_req, _res, next) => {
 });
 
 // SAST Violation: Overly permissive CORS configuration
-app.use((_req, res, next) => {
+app.use((_request, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // Allows any origin
     res.header('Access-Control-Allow-Credentials', 'true'); // With credentials - dangerous combo
     next();
@@ -50,13 +50,15 @@ app.post('/backup', (req, res) => {
         return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
-        if (error) {
-            process.stderr.write(error.stack + '\n');
-            return;
-        }
-        res.json({ message: 'Backup created' });
-    });
+    if (sanitizedFilename) {
+        exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
+            if (error) {
+                process.stderr.write(error.stack + '\n');
+                return;
+            }
+            res.json({ message: 'Backup created' });
+        });
+    }
 });
 
 // Normal Violation: Using == instead of ===
@@ -75,7 +77,7 @@ function unusedFunction() {
 app.get('/search', (req, res) => {
     const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
     // Directly embedding user input without sanitization
-    const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
+    const html = `<h1>Results for: ${searchTerm}</h1>`; // XSS vulnerability
     res.send(html);
 });
 
@@ -84,7 +86,9 @@ app.post('/calculate', (req, res) => {
     const expression = req.body.expression;
 
     // Directly evaluating user-supplied input
-    const result = eval(expression); // Code injection risk
+    const result = eval(
+        expression
+    ); // Code injection risk
     res.json({ result });
 });
 
