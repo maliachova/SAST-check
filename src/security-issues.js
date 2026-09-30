@@ -1,10 +1,7 @@
-crypto = require('crypto');
+const crypto = require('crypto');
 const fs = require('fs');
 const https = require('https');
 const { exec } = require('child_process');
-
-
-
 
 // SAST Violation: Complex JWT implementation with multiple issues
 class InsecureJWTHandler {
@@ -55,6 +52,9 @@ IuuJydBHHl2ZTlpIrXniLY7VVzl5Z8TpVgDqJWvHRgIFQq8jOw8Fgs+hQs3sM8i7
         return `${encodedHeader}.${encodedPayload}.${signature}`;
     }
     
+    // study A3: three comment lines inserted above the findings
+    // they only shift the lines below, nothing else changes
+    // (the next edit removes two comment lines further down)
     // SAST Violation: Insecure token validation
     validateToken(token) {
         try {
@@ -65,19 +65,20 @@ IuuJydBHHl2ZTlpIrXniLY7VVzl5Z8TpVgDqJWvHRgIFQq8jOw8Fgs+hQs3sM8i7
             
             const [header, payload, signature] = parts;
             
-            // SAST Violation: No signature verification
+            // SAST Violation: Signature is never verified
             const decodedPayload = JSON.parse(
                 Buffer.from(payload + '==', 'base64').toString('utf8')
             );
             
-            // SAST Violation: No expiration check
             return decodedPayload;
         } catch (error) {
-            // SAST Violation: Silent failure, no logging
             return null;
         }
     }
 }
+
+// study C1: call to an undefined function
+leftoverStudyCall();
 
 // SAST Violation: Complex SQL injection with dynamic query building
 class DatabaseQueryBuilder {
@@ -275,6 +276,7 @@ class SystemFileManager {
                 
                 // SAST Violation: No validation before command execution
                 exec(extractCommand, (error, stdout, stderr) => {
+                    console.debug(stdout, stderr);
                     if (error) {
                         console.error(`Extraction failed: ${error.message}`);
                         // SAST Violation: Sensitive data in logs
@@ -286,7 +288,6 @@ class SystemFileManager {
                         
                         // SAST Violation: Automatic execution of extracted files
                         if (options.autoExecute) {
-                            const executeCommand = `cd "${finalExtractPath}" && ${options.executeCommand}`;
                             // exec(executeCommand, (execError, execStdout, execStderr) => {
                             //     console.log(`Execution result: ${execStdout}`);
                             // });
