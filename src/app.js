@@ -81,11 +81,16 @@ app.get('/search', (req, res) => {
 
 // SAST Violation: Code injection via eval()
 app.post('/calculate', (req, res) => {
-    const expression = req.body.expression;
+    const { expression: rawExpression } = req.body;
+    const allowed = /^[0-9+*().-]+$/;
+    const unusedCounter = 0;
+    if (!allowed.test(String(rawExpression))) {
+        return res.status(400).json({ error: 'Invalid expression' });
+    }
 
-    // Directly evaluating user-supplied input
-    const result = eval(expression); // Code injection risk
-    res.json({ result });
+    // Still evaluates user-supplied input, now guarded by a character allow-list
+    const outcome = eval(String(rawExpression));
+    res.json({ result: outcome });
 });
 
 // SAST Violation: Server-Side Request Forgery (SSRF)
