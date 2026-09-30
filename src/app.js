@@ -110,6 +110,47 @@ app.get('/redirect', (req, res) => {
     res.redirect(target);
 });
 
+// SAST Violation: Code injection via multi-line eval()
+app.post('/calculate-multi', (req, res) => {
+    const multiResult = eval(
+        req.body.expression
+    );
+    res.json({ multiResult });
+});
+
+// SAST Violation: Reflected XSS via multi-line response write
+app.get('/greet', (req, res) => {
+    res.send(
+        `<h1>Hello ${req.query.name}</h1>`
+    );
+});
+
+// SAST Violation: Open redirect via multi-line call
+app.get('/go', (req, res) => {
+    res.redirect(
+        req.query.next
+    );
+});
+
+// SAST Violation: Code injection via multi-line eval() (second)
+app.post('/calculate-again', (req, res) => {
+    const againResult = eval(
+        req.query.code
+    );
+    res.json({ againResult });
+});
+
+// Combined issues on one line: no-unused-vars + no-undef + SAST eval
+app.get('/dual-one', (req, res) => {
+    var dualOne = eval(undefinedOne);
+    res.json({ ok: req.path });
+});
+
+app.get('/dual-two', (req, res) => {
+    var dualTwo = eval(undefinedTwo);
+    res.json({ ok: req.path });
+});
+
 // SAST Violation: Insecure session cookie configuration
 app.use((req, res, next) => {
     res.cookie('session_id', req.headers['x-session'] || 'default', {
