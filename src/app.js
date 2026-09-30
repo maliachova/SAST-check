@@ -73,10 +73,10 @@ function unusedFunction() {
 }
 
 app.get('/search', (req, res) => {
-    const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
-    // Directly embedding user input without sanitization
-    const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
-    res.send(html);
+    const term = String(req.query.q || '').trim();
+    const escapeHtml = (value) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const page = `<h1>Search results for: ${escapeHtml(term)}</h1>`;
+    res.send(page);
 });
 
 // SAST Violation: Code injection via eval()
