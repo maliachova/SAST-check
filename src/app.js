@@ -9,11 +9,12 @@ const app = express();
 app.use(express.json());
 
 // SAST Violation: Hardcoded credentials
-const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
+DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
 const API_SECRET_KEY = 'sk_live_51Hy2f9AbCdEfGhIjKlMnOpQr'; // Hardcoded API key
 
 // SAST Violation: Missing security headers
-app.use((_req, _res, next) => {
+app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     next();
 });
 
@@ -107,7 +108,7 @@ app.get('/fetch-url', (req, res) => {
 app.get('/redirect', (req, res) => {
     const target = req.query.next;
     // Unvalidated redirect target from user input
-    res.redirect(target);
+    return res.redirect(target);
 });
 
 // SAST Violation: Insecure session cookie configuration
