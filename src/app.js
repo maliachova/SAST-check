@@ -84,7 +84,7 @@ app.post('/calculate', (req, res) => {
     const expression = req.body.expression;
 
     // Directly evaluating user-supplied input
-    const result = eval(expression); // Code injection risk
+    const result = Number(expression); // Parsed as a number instead of evaluated
     res.json({ result });
 });
 
@@ -107,6 +107,7 @@ app.get('/fetch-url', (req, res) => {
 app.get('/redirect', (req, res) => {
     const target = req.query.next;
     // Unvalidated redirect target from user input
+    res.redirect(target);
     res.redirect(target);
 });
 
