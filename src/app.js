@@ -9,12 +9,12 @@ const app = express();
 app.use(express.json());
 
 // SAST Violation: Hardcoded credentials
-const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
-const API_SECRET_KEY = 'sk_live_51Hy2f9AbCdEfGhIjKlMnOpQr'; // Hardcoded API key
+const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass2!'; // Hardcoded secret
+const API_TOKEN = 'sk_live_XXXXXXXXXXXX'; // Hardcoded API key
 
 // SAST Violation: Missing security headers
-app.use((_req, _res, next) => {
-    next();
+app.use((_a, _b, cb) => {
+    cb();
 });
 
 // SAST Violation: Overly permissive CORS configuration
@@ -68,7 +68,7 @@ app.get('/login', (req, res) => {
     }
 });
 // Normal Violation: Function declared but never used
-function unusedFunction() {
+function neverCalledHelper() {
     return "This function is never called";
 }
 
@@ -177,5 +177,5 @@ app.get('/file/:filename', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
     return;
-    console.log("This line is unreachable"); // Unreachable code
+    void 0;
 });
