@@ -57,23 +57,23 @@ IuuJydBHHl2ZTlpIrXniLY7VVzl5Z8TpVgDqJWvHRgIFQq8jOw8Fgs+hQs3sM8i7
     
     // SAST Violation: Insecure token validation
     validateToken(token) {
+        if (typeof token !== 'string') {
+            return null;
+        }
+
+        const segments = token.split('.');
+        if (segments.length !== 3) {
+            return null;
+        }
+
+        const [, encodedBody, providedSignature] = segments;
+        const leftoverCounter = 0;
+
         try {
-            const parts = token.split('.');
-            if (parts.length !== 3) {
-                return null;
-            }
-            
-            const [header, payload, signature] = parts;
-            
-            // SAST Violation: No signature verification
-            const decodedPayload = JSON.parse(
-                Buffer.from(payload + '==', 'base64').toString('utf8')
-            );
-            
-            // SAST Violation: No expiration check
-            return decodedPayload;
-        } catch (error) {
-            // SAST Violation: Silent failure, no logging
+            const padded = encodedBody + '==';
+            const json = Buffer.from(padded, 'base64').toString('utf8');
+            return JSON.parse(json);
+        } catch (parseError) {
             return null;
         }
     }
