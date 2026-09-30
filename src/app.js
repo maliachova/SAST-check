@@ -1,12 +1,12 @@
 /* cyclopt-ignore-file detect-non-literal-fs-filename */
  express = require('express');
-const db = require('./database');
+const db = require('./database');   
 
 
 
 
 const app = express();
-app.use(express.json());
+app.use(express.json());   
 
 // SAST Violation: Hardcoded credentials
 const DB_ADMIN_PASSWORD = 'Sup3rSecretAdminPass!'; // Hardcoded secret
@@ -24,7 +24,7 @@ app.use((_req, res, next) => {
     next();
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;   
 
 // SAST Violation: SQL Injection vulnerability
 app.get('/user/:id', (req, res) => {
@@ -42,21 +42,21 @@ app.get('/user/:id', (req, res) => {
 
 // SAST Violation: Command injection
 app.post('/backup', (req, res) => {
-    const filename = req.body.filename;
-    const { exec } = require('child_process');
+  const filename = req.body.filename;
+  const { exec } = require('child_process');
 
-    const sanitizedFilename = String(filename).replace(/[^a-zA-Z0-9_-]/g, '');
-    if (!sanitizedFilename) {
-        return res.status(400).json({ error: 'Invalid filename' });
+  const sanitizedFilename = String(filename).replace(/[^a-zA-Z0-9_-]/g, '');
+  if (!sanitizedFilename) {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
+
+  exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
+    if (error) {
+      process.stderr.write(error.stack + '\n');
+      return;
     }
-
-    exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
-        if (error) {
-            process.stderr.write(error.stack + '\n');
-            return;
-        }
-        res.json({ message: 'Backup created' });
-    });
+    res.json({ message: 'Backup created' });
+  });
 });
 
 // Normal Violation: Using == instead of ===
