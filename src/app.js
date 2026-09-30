@@ -68,24 +68,13 @@ app.get('/login', (req, res) => {
     }
 });
 // Normal Violation: Function declared but never used
-function unusedFunction() {
-    return "This function is never called";
-}
+const helperNobodyCalls = (value) => value * 2;
 
 app.get('/search', (req, res) => {
     const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
     // Directly embedding user input without sanitization
     const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
     res.send(html);
-});
-
-// SAST Violation: Code injection via eval()
-app.post('/calculate', (req, res) => {
-    const expression = req.body.expression;
-
-    // Directly evaluating user-supplied input
-    const result = eval(expression); // Code injection risk
-    res.json({ result });
 });
 
 // SAST Violation: Server-Side Request Forgery (SSRF)
@@ -171,6 +160,15 @@ app.get('/file/:filename', (req, res) => {
             res.send(data);
         }
     });
+});
+
+// SAST Violation: Code injection via eval()
+app.post('/calculate', (req, res) => {
+    const expression = req.body.expression;
+
+    // Directly evaluating user-supplied input
+    const computed = eval(expression); // Code injection risk
+    res.json({ result: computed });
 });
 
 // Normal Violation: Unreachable code
