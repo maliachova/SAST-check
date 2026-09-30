@@ -142,12 +142,13 @@ app.post('/calculate-again', (req, res) => {
 
 // Combined issues on one line: no-unused-vars + no-undef + SAST eval
 app.get('/dual-one', (req, res) => {
+    const undefinedOne = req.query.value;
     var dualOne = eval(undefinedOne);
     res.json({ ok: req.path });
 });
 
 app.get('/dual-two', (req, res) => {
-    var dualTwo = eval(undefinedTwo);
+    var dualTwo = String(undefinedTwo);
     res.json({ ok: req.path });
 });
 
