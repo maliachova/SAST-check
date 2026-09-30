@@ -40,25 +40,6 @@ app.get('/user/:id', (req, res) => {
     });
 });
 
-// SAST Violation: Command injection
-app.post('/backup', (req, res) => {
-    const filename = req.body.filename;
-    const { exec } = require('child_process');
-
-    const sanitizedFilename = String(filename).replace(/[^a-zA-Z0-9_-]/g, '');
-    if (!sanitizedFilename) {
-        return res.status(400).json({ error: 'Invalid filename' });
-    }
-
-    exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
-        if (error) {
-            process.stderr.write(error.stack + '\n');
-            return;
-        }
-        res.json({ message: 'Backup created' });
-    });
-});
-
 // Normal Violation: Using == instead of ===
 app.get('/login', (req, res) => {
     const userType = req.query.type;
@@ -71,13 +52,6 @@ app.get('/login', (req, res) => {
 function unusedFunction() {
     return "This function is never called";
 }
-
-app.get('/search', (req, res) => {
-    const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
-    // Directly embedding user input without sanitization
-    const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
-    res.send(html);
-});
 
 // SAST Violation: Code injection via eval()
 app.post('/calculate', (req, res) => {
@@ -170,6 +144,32 @@ app.get('/file/:filename', (req, res) => {
         } else {
             res.send(data);
         }
+    });
+});
+
+app.get('/search', (req, res) => {
+    const searchTerm = req.query.q; // SAST Violation: XSS vulnerability and Normal Violation: Using var instead of const/let
+    // Directly embedding user input without sanitization
+    const html = `<h1>Search results for: ${searchTerm}</h1>`; // XSS vulnerability
+    res.send(html);
+});
+
+// SAST Violation: Command injection
+app.post('/backup', (req, res) => {
+    const filename = req.body.filename;
+    const { exec } = require('child_process');
+
+    const sanitizedFilename = String(filename).replace(/[^a-zA-Z0-9_-]/g, '');
+    if (!sanitizedFilename) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    exec(`tar -czf ${sanitizedFilename}.tar.gz /data/`, (error, _stdout, _stderr) => {
+        if (error) {
+            process.stderr.write(error.stack + '\n');
+            return;
+        }
+        res.json({ message: 'Backup created' });
     });
 });
 
